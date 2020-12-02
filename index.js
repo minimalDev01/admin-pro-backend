@@ -11,19 +11,15 @@ const app = express();
 // Configure CORS
 app.use(cors());
 
+// Body parse and body read
+app.use(express.json());
+
 // Database
 dbConnection();
 
-// mean_user
-// bBFlkHEfkvfpVOXY
-
 // Routes
-app.get("/", (req, res) => {
-  res.json({
-    ok: true,
-    msg: "Hola mundo",
-  });
-});
+app.use("/api/users", require("./routes/users"));
+app.use("/api/login", require("./routes/auth"));
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
