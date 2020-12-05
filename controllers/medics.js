@@ -35,18 +35,66 @@ const createMedic = async (req, res = response) => {
   }
 };
 
-const updateMedic = (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "updateMedic",
-  });
+const updateMedic = async (req, res = response) => {
+  const id = req.params.id;
+  const uid = req.uid;
+
+  try {
+    const medic = await Medic.findById(id);
+    if (!medic) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Medic not found by ID",
+      });
+    }
+
+    const medicChanges = {
+      ...req.body,
+      user: uid,
+    };
+
+    const updatedMedic = await Medic.findByIdAndUpdate(id, medicChanges, {
+      new: true,
+    });
+
+    res.json({
+      ok: true,
+      medic: updatedMedic,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Contact with the administrator",
+    });
+  }
 };
 
-const deleteMedic = (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: "deleteMedic",
-  });
+const deleteMedic = async (req, res = response) => {
+  const id = req.params.id;
+
+  try {
+    const medic = Medic.findById(id);
+    if (!medic) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Medic not found by ID",
+      });
+    }
+
+    await Medic.findByIdAndDelete(id);
+
+    res.json({
+      ok: true,
+      msg: "Medic deleted",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Contact with the administrator",
+    });
+  }
 };
 
 module.exports = {
