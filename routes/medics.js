@@ -13,11 +13,12 @@ const {
   createMedic,
   updateMedic,
   deleteMedic,
+  getMedicByID,
 } = require("../controllers/medics");
 
 const router = Router();
 
-router.get("/", getMedics);
+router.get("/", validateJWT, getMedics);
 router.post(
   "/",
   [
@@ -33,11 +34,13 @@ router.put(
   [
     validateJWT,
     check("name", "Medic name required").not().isEmpty(),
-    check("name", "Hospital ID must be valid").isMongoId(),
+    check("hospital", "Hospital ID must be valid").isMongoId(),
     validateFields,
   ],
   updateMedic
 );
 router.delete("/:id", validateJWT, deleteMedic);
+
+router.get("/:id", validateJWT, getMedicByID);
 
 module.exports = router;

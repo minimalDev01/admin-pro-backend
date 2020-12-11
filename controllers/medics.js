@@ -12,6 +12,27 @@ const getMedics = async (req, res = response) => {
   });
 };
 
+const getMedicByID = async (req, res = response) => {
+  const id = req.params.id;
+
+  try {
+    const medic = await Medic.findById(id)
+      .populate("user", "name img")
+      .populate("hospital", "name img");
+
+    res.json({
+      ok: true,
+      medic,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Contact with the administrator",
+    });
+  }
+};
+
 const createMedic = async (req, res = response) => {
   const uid = req.uid;
   const medic = new Medic({
@@ -102,4 +123,5 @@ module.exports = {
   createMedic,
   updateMedic,
   deleteMedic,
+  getMedicByID,
 };
